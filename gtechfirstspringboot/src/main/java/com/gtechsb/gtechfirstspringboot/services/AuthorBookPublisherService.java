@@ -28,7 +28,7 @@ public class AuthorBookPublisherService {
         Iterable<Book> returnedBooks = bookRepository.findAll();  //Not iterating through element of the list
         List<Book> bookList = (List<Book>) returnedBooks;         //A different approach compared to below findAll Authors
                                                                   //Note: findAll() method returns Iterable<T>.  TypeCast to change type to List<T> or
-        return bookList;                                          //Set<T>.
+        return bookList;                                          //Set<T>.....
     }
 
     public List<Author> getAllAuthors() {
