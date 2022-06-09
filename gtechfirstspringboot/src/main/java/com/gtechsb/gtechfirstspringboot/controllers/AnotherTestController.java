@@ -1,2 +1,4 @@
-package com.gtechsb.gtechfirstspringboot.controllers;public class AnotherTestController {
+package com.gtechsb.gtechfirstspringboot.controllers;
+
+public class AnotherTestController {
 }
