@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>GTech Thymeleaf Demo</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 5px;
+        }
+        .center{
+            margin-left: auto;
+            margin-right: auto;
+            width:50%;
+        }
+        .alignText{
+            text-align: center;
+        }
+    </style>
+</head>
+<body style="background-color:skyblue;">
+<div class="alignText">
+    <h1 class="center"; style="color:blue; font-family:Verdana; font-size: xx-large; font-weight:bold; border: 2px solid brown; padding: 10px; width:40%">Thymeleaf Demo by Ghislain Muabila</h1>
+    <p style="color:green;background-color:tomato;">This is to test rendering a Dynamic web page using Thymeleaf.<br><br></p>
+    <p style="color:red; font-style:italic;font-family:Geneva;">This is a red paragraph.</p>
+    <br><br>
+
+    <h1 style="font-family:Verdana">New Book added</h1>
+</div>
+<table class="center">
+    <tr>
+        <th>ID</th>
+        <th>ISBN</th>
+        <th>Title</th>
+        <th>PublisherId</th>
+    </tr>
+    <tr th:text="${addedbook}"/>
+        <td th:text="${addedbook.id}"/>
+        <td th:text="${addedbook.isbn}"/>
+        <td th:text="${addedbook.title}"></td>
+    </tr>
+</table>
+<br><br><br>
+<p style="font-family: Verdana; font-size: large; text-align: center">Regards,<br>Ghislain Muabila
+</p>
+
+</body>
+</html>

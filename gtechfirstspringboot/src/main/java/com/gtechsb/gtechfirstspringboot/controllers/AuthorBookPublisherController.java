@@ -11,6 +11,7 @@ import com.gtechsb.gtechfirstspringboot.services.AuthorBookPublisherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,13 @@ public class AuthorBookPublisherController {
         List<Book> bookList = authorBookPublisherService.getAllBooks();
         return ResponseEntity.ok(bookList);
     }
+
+//    @GetMapping("/booksall")
+//    public String gettingAllBooks(Model model){
+//
+//        model.addAttribute("returnedBooks", authorBookPublisherService.getAllBooks());
+//        return "books/allbooklist";
+//    }
 
     @GetMapping("/index")
     public ResponseEntity<String> getIndexPage(){

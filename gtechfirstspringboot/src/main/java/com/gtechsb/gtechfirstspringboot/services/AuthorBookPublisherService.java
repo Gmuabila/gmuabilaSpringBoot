@@ -18,17 +18,44 @@ import java.util.stream.Stream;
 public class AuthorBookPublisherService {
 
     @Autowired
-    AuthorRepository authorRepository;
+    private final AuthorRepository authorRepository;
     @Autowired
-    BookRepository bookRepository;
+    private final BookRepository bookRepository;
     @Autowired
-    PublisherRepository publisherRepository;
+    private final PublisherRepository publisherRepository;
+
+    public AuthorBookPublisherService(AuthorRepository authorRepository, BookRepository bookRepository, PublisherRepository publisherRepository) {
+        this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
+        this.publisherRepository = publisherRepository;
+    }
 
     public List<Book> getAllBooks() {
         Iterable<Book> returnedBooks = bookRepository.findAll();  //Not iterating through element of the list
         List<Book> bookList = (List<Book>) returnedBooks;         //A different approach compared to below findAll Authors
                                                                   //Note: findAll() method returns Iterable<T>.  TypeCast to change type to List<T> or
-        return bookList;                                          //Set<T>.....
+        return bookList;                                         //Set<T>.....
+    }
+
+    public List<Book> getLimitNumOfBooks(Integer limitIn) {
+       // Book[] arrayBooks = new Book[limitIn];
+        List<Book> returnBookList = new ArrayList<>();
+
+        Iterable<Book> returnedBooks = bookRepository.findAll();
+        List<Book> bookList = (List<Book>) returnedBooks;
+        if(limitIn <= bookList.size()) {
+            for (int x = 0; x < limitIn; x++) {
+                // arrayBooks[x] = bookList.get(x);
+                // returnBookList.add(arrayBooks[x]);
+                returnBookList.add(bookList.get(x));
+            }
+        }
+        else {
+            System.out.println("The Size entered is greater than the total number of books "
+                    + "\"" + bookList.size() + "\"" + " in stock\n" + "Please enter number between 1 to " + bookList.size() + ".");
+        }
+
+        return returnBookList;
     }
 
     public List<Author> getAllAuthors() {
@@ -61,31 +88,31 @@ public class AuthorBookPublisherService {
 
     public Book getABookByIsbn(String isbnIn) {
         Book returnedBook = new Book();
-        Optional<Book> first = bookRepository.findAll().stream().filter(book -> book.getIsbn().equalsIgnoreCase(isbnIn)).findFirst();
-        if(first.isPresent()){
-            returnedBook = first.get();                     //get() will return the object,
-        } else {                                           //Book, in this case.
-            System.out.println("Book Not Found, please check ISBN and try again");
-        }
+//        Optional<Book> first = bookRepository.findAll().stream().filter(book -> book.getIsbn().equalsIgnoreCase(isbnIn)).findFirst();
+//        if(first.isPresent()){
+//            returnedBook = first.get();                     //get() will return the object,
+//        } else {                                           //Book, in this case.
+//            System.out.println("Book Not Found, please check ISBN and try again");
+//        }
 //        List<Book> result = new ArrayList<>();
 //        bookRepository.findAll().forEach(book -> result.add(book));
 //        Optional<Book> first = result.stream().filter(book -> book.getIsbn().equalsIgnoreCase(isbnIn)).findFirst();
 //        return first.get();
 
-//        Book returnedBook = new Book();
-//       bookRepository.findAll().forEach(book -> {
-//           if (book.getIsbn().equalsIgnoreCase(isbnIn)) {
-////                returnedBook.setId(book.getId());
-////                returnedBook.setTitle(book.getTitle());
-////                returnedBook.setIsbn(book.getIsbn());
-//            //  All 3 options below do not work why?  Instead of setting up a new book, can we not just return the returned book from the DB.
-//            //    return (Book) book;
-//            //    returnedBook = book;
-//            //    returnedBook = (Book) book;
-//            } else {
-//                return;
-//            }
-//        });
+       // Book returnedBook = new Book();
+       bookRepository.findAll().forEach(book -> {
+           if (book.getIsbn().equalsIgnoreCase(isbnIn)) {
+                returnedBook.setId(book.getId());
+                returnedBook.setTitle(book.getTitle());
+                returnedBook.setIsbn(book.getIsbn());
+            //  All 3 options below do not work why?  Instead of setting up a new book, can we not just return the returned book from the DB.
+            //    return (Book) book;
+            //    returnedBook = book;
+            //    returnedBook = (Book) book;
+            } else {
+                return;
+            }
+        });
 //
        return returnedBook;
     }
@@ -137,7 +164,7 @@ public class AuthorBookPublisherService {
 
     public Book addNewBook(Book bookIn) {
         Book returnedSavedBook = new Book();
-        Optional<Book> foundBook = bookRepository.findAll().stream().filter(book -> book.getIsbn().equalsIgnoreCase(bookIn.getIsbn())).findFirst();
+        Optional<Book> foundBook = bookRepository.findAll().stream().filter(x-> x.getIsbn().equalsIgnoreCase(bookIn.getIsbn())).findFirst();
         if (foundBook.isEmpty()){
             returnedSavedBook = bookRepository.save(bookIn);                              //No need to create an object as Spring recognises the object from the DTO
     }else {                                                                               //and will convert JSON to the object automatically.
@@ -258,7 +285,7 @@ public class AuthorBookPublisherService {
         Optional<Publisher> returnedPublisher = publisherRepository.findById(idIn);
         if (returnedPublisher.isPresent()) {
             publisherRepository.deleteById(idIn);
-        } else {
+        } else {  //is it best to throw an Exception here ??
             System.out.println("Unable to find a Publisher with id number: " + idIn + ".  Please verify and try again");
         }
         //Improved code above to avoid going through all element in the database.
