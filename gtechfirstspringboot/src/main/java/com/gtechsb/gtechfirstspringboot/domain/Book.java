@@ -3,6 +3,8 @@ package com.gtechsb.gtechfirstspringboot.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -12,7 +14,10 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NotNull
     private String title;
+    @NotNull
+    @Size(min=10, max=10)
     private String isbn;
 
     @ManyToOne    //Can be interpreted as many books can have one Publisher

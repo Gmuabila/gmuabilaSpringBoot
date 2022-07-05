@@ -34,7 +34,6 @@ public class IndexController {
     public String getBooks(Model model){
         model.addAttribute("book", new Book());
         return "books/bookshome";
-
     }
 
     @GetMapping("/allbooks")
@@ -78,13 +77,6 @@ public class IndexController {
 
     @PostMapping("/addBookfrombrowser")
     public String addingBookFromBrowser(@ModelAttribute Book book, Model model){
-//        Book book = new Book();
-////        book.setTitle(bookIn.getTitle());
-////        book.setIsbn(bookIn.getIsbn());
-//        book.setTitle(map.get("title"));
-//        book.setIsbn(map.get("isbn"));
-
-
         model.addAttribute("addedbook", authorBookPublisherService.addNewBook(book));
 
         return "books/bookadded";

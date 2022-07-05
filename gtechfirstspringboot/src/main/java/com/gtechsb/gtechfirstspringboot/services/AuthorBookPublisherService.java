@@ -88,31 +88,31 @@ public class AuthorBookPublisherService {
 
     public Book getABookByIsbn(String isbnIn) {
         Book returnedBook = new Book();
-//        Optional<Book> first = bookRepository.findAll().stream().filter(book -> book.getIsbn().equalsIgnoreCase(isbnIn)).findFirst();
-//        if(first.isPresent()){
-//            returnedBook = first.get();                     //get() will return the object,
-//        } else {                                           //Book, in this case.
-//            System.out.println("Book Not Found, please check ISBN and try again");
-//        }
+        Optional<Book> first = bookRepository.findAll().stream().filter(book -> book.getIsbn().equalsIgnoreCase(isbnIn)).findFirst();
+        if(first.isPresent()){
+            returnedBook = first.get();                     //get() will return the object,
+        } else {                                           //Book, in this case.
+            System.out.println("Book Not Found, please check ISBN and try again");
+        }
 //        List<Book> result = new ArrayList<>();
 //        bookRepository.findAll().forEach(book -> result.add(book));
 //        Optional<Book> first = result.stream().filter(book -> book.getIsbn().equalsIgnoreCase(isbnIn)).findFirst();
 //        return first.get();
 
        // Book returnedBook = new Book();
-       bookRepository.findAll().forEach(book -> {
-           if (book.getIsbn().equalsIgnoreCase(isbnIn)) {
-                returnedBook.setId(book.getId());
-                returnedBook.setTitle(book.getTitle());
-                returnedBook.setIsbn(book.getIsbn());
-            //  All 3 options below do not work why?  Instead of setting up a new book, can we not just return the returned book from the DB.
-            //    return (Book) book;
-            //    returnedBook = book;
-            //    returnedBook = (Book) book;
-            } else {
-                return;
-            }
-        });
+//       bookRepository.findAll().forEach(book -> {
+//           if (book.getIsbn().equalsIgnoreCase(isbnIn)) {
+//                returnedBook.setId(book.getId());
+//                returnedBook.setTitle(book.getTitle());
+//                returnedBook.setIsbn(book.getIsbn());
+//            //  All 3 options below do not work why?  Instead of setting up a new book, can we not just return the returned book from the DB.
+//            //    return (Book) book;
+//            //    returnedBook = book;
+//            //    returnedBook = (Book) book;
+//            } else {
+//                return;
+//            }
+//        });
 //
        return returnedBook;
     }
@@ -164,12 +164,14 @@ public class AuthorBookPublisherService {
 
     public Book addNewBook(Book bookIn) {
         Book returnedSavedBook = new Book();
-        Optional<Book> foundBook = bookRepository.findAll().stream().filter(x-> x.getIsbn().equalsIgnoreCase(bookIn.getIsbn())).findFirst();
+        Optional<Book> foundBook = bookRepository.findAll().stream().filter(x -> x.getTitle().equalsIgnoreCase(bookIn.getTitle())
+                || x.getIsbn().equalsIgnoreCase(bookIn.getIsbn())).findFirst();
         if (foundBook.isEmpty()){
             returnedSavedBook = bookRepository.save(bookIn);                              //No need to create an object as Spring recognises the object from the DTO
     }else {                                                                               //and will convert JSON to the object automatically.
              System.out.println("Unable to add Book.  Book already exist");
         }
+
         return returnedSavedBook;
     }
 
@@ -303,6 +305,7 @@ public class AuthorBookPublisherService {
         if (returnedPublisher.isPresent()) {
             publisher = returnedPublisher.get();
 
+            publisher.setId(publisherIn.getId());
             publisher.setName(publisherIn.getName());
             publisher.setAddressLine1(publisherIn.getAddressLine1());
             publisher.setCity(publisherIn.getCity());
@@ -311,6 +314,7 @@ public class AuthorBookPublisherService {
 
             publisher = publisherRepository.save(publisher);
         }
+
 
 //        **********Removing the below codes as no need to loop through the database as we can find item by id**********
 //        publisherRepository.findAll().forEach(publisher -> {
@@ -324,7 +328,13 @@ public class AuthorBookPublisherService {
 //                Publisher returnedSavedPublisher = publisherRepository.save(publisher);
 //            }
         else {
-            System.out.println("Publisher with id: " + "'" + publisherIn.getId() + "'" + " not found.  Please check id and try again.");
+            publisher.setName(publisherIn.getName());
+            publisher.setAddressLine1(publisherIn.getAddressLine1());
+            publisher.setCity(publisherIn.getCity());
+            publisher.setPostcode(publisherIn.getPostcode());
+            publisher.setCountry(publisherIn.getCountry());
+
+            publisher = publisherRepository.save(publisher);
         }
 
         return publisher;
