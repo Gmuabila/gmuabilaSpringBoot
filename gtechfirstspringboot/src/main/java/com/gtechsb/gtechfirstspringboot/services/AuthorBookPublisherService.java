@@ -8,6 +8,8 @@ import com.gtechsb.gtechfirstspringboot.dto.AddBookAuthorDto;
 import com.gtechsb.gtechfirstspringboot.repositories.AuthorRepository;
 import com.gtechsb.gtechfirstspringboot.repositories.BookRepository;
 import com.gtechsb.gtechfirstspringboot.repositories.PublisherRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.stream.Stream;
 
 @Service
 public class AuthorBookPublisherService {
+    Logger logger = LogManager.getLogger(AuthorBookPublisherService.class);
 
     @Autowired
     private final AuthorRepository authorRepository;
@@ -31,9 +34,10 @@ public class AuthorBookPublisherService {
     }
 
     public List<Book> getAllBooks() {
+        logger.info("Service requesting all Books from the repository...");
         Iterable<Book> returnedBooks = bookRepository.findAll();  //Not iterating through element of the list
         List<Book> bookList = (List<Book>) returnedBooks;         //A different approach compared to below findAll Authors
-                                                                  //Note: findAll() method returns Iterable<T>.  TypeCast to change type to List<T> or
+        logger.info("Service returning all Books to the Controller");                                                          //Note: findAll() method returns Iterable<T>.  TypeCast to change type to List<T> or
         return bookList;                                         //Set<T>.....
     }
 
@@ -282,6 +286,32 @@ public class AuthorBookPublisherService {
 //        });
 
     }
+
+    public Book updateBook(Book bookIn) {
+        Book book = new Book();
+        Long bookInId = bookIn.getId();
+        Optional<Book> returnedBook = bookRepository.findById(bookInId);
+        if (returnedBook.isPresent()) {
+            book = returnedBook.get();
+
+            //book.setId(bookIn.getId());
+            book.setTitle(bookIn.getTitle());
+            book.setIsbn(bookIn.getIsbn());
+            book.setPublisher(bookIn.getPublisher());
+
+            book = bookRepository.save(book);
+        }
+        else {
+            book.setId(bookInId);
+            book.setTitle(bookIn.getTitle());
+            book.setIsbn(bookIn.getIsbn());
+            book.setPublisher(bookIn.getPublisher());
+
+            book = bookRepository.save(book);
+        }
+        return book;
+    }
+
 
     public void deletePublisher(Long idIn) {
         Optional<Publisher> returnedPublisher = publisherRepository.findById(idIn);

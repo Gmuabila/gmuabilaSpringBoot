@@ -1,12 +1,15 @@
 package com.gtechsb.gtechfirstspringboot.controllers;
 
 import com.gtechsb.gtechfirstspringboot.domain.Book;
+import com.gtechsb.gtechfirstspringboot.domain.User;
 import com.gtechsb.gtechfirstspringboot.services.AuthorBookPublisherService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -77,9 +80,26 @@ public class IndexController {
 
     @PostMapping("/addBookfrombrowser")
     public String addingBookFromBrowser(@ModelAttribute Book book, Model model){
+//        Code does not work, no error page was rendered when error occurred.
+//        To try the code again add the following parameter "BindingResult result"
+//        if(result.hasErrors()){
+//            return "books/error";
+//        }
         model.addAttribute("addedbook", authorBookPublisherService.addNewBook(book));
 
         return "books/bookadded";
 
     }
+
+    @GetMapping("/register")
+    public String showForm(Model model){
+        User user = new User();
+        model.addAttribute("user", user);
+
+        List<String> listProfession = Arrays.asList("Developer", "Tester", "Architect");
+        model.addAttribute("listProfession", listProfession);
+        return "books/register_form";
+    }
+
+
 }

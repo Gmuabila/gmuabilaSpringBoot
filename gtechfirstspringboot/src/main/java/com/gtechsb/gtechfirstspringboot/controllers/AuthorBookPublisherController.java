@@ -8,17 +8,23 @@ import com.gtechsb.gtechfirstspringboot.repositories.AuthorRepository;
 import com.gtechsb.gtechfirstspringboot.repositories.BookRepository;
 import com.gtechsb.gtechfirstspringboot.repositories.PublisherRepository;
 import com.gtechsb.gtechfirstspringboot.services.AuthorBookPublisherService;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-
+@Log4j2
 @RestController
 @RequestMapping("/authbookapi")
 public class AuthorBookPublisherController {
+    Logger logger = LogManager.getLogger(AuthorBookPublisherController.class.getName());
 
     @Autowired
     AuthorBookPublisherService authorBookPublisherService;
@@ -26,8 +32,11 @@ public class AuthorBookPublisherController {
    // @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @GetMapping("/allbooks")
     public ResponseEntity<List<Book>> retrieveAllBooks() {
+        logger.info("Request from client for all books is in...");
         List<Book> bookList = authorBookPublisherService.getAllBooks();
+        logger.info("Returning all books to the client....");
         return ResponseEntity.ok(bookList);
+
     }
 
 //    @GetMapping("/booksall")
@@ -116,6 +125,11 @@ public class AuthorBookPublisherController {
     @DeleteMapping("/deletebook/{idIn}")
     public void deleteABook(@PathVariable("idIn") Long idIn){
          authorBookPublisherService.deleteBook(idIn);
+    }
+
+    @PutMapping("/updatebook")
+    public Book updateAPublisher(@RequestBody Book bookIn){
+        return authorBookPublisherService.updateBook(bookIn);
     }
 
     @DeleteMapping("/deleteauthor/{idIn}")
